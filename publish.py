@@ -1,10 +1,4 @@
-import logging
-import random
-import time
 import threading
-import time
-import signal
-from datetime import timedelta
 
 from google.cloud import pubsub_v1
 from request_executors import RequestExecutor

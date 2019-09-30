@@ -1,7 +1,3 @@
-import os
-import numpy as np
-from datetime import datetime, timedelta
-
 from apis import IEXAPI
 
 
@@ -15,7 +11,7 @@ class RequestExecutor:
         quotes = list(deserialized_response.values())
         prices = next(item['quote']['latestPrice'] for item in quotes)
         epoch_timestamps = next(item['quote']['latestUpdate'] for item in quotes)
-        return message.format(
+        return self.message.format(
             ticker=tickers,
             epoch_timestamp=epoch_timestamps,
             price=prices
@@ -23,6 +19,7 @@ class RequestExecutor:
 
     def retrieve_price_data(self):
         api = IEXAPI()
-        deserialized_response = api.get_latest_price(self.tickers)
+        response = api.get_latest_price(self.tickers)
+        deserialized_response = response.json()
         message_format = self._reformat_response(deserialized_response)
         return message_format

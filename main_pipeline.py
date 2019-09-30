@@ -1,14 +1,12 @@
-from apache_beam.options.pipeline_options import PipelineOptions
-from google.cloud import pubsub_v1
-from google.cloud import bigquery
-import apache_beam as beam
-import logging
-import argparse
-from datetime import datetime
 import sys
 import re
+import logging
+import argparse
 import time
 
+from apache_beam.options.pipeline_options import PipelineOptions
+from google.cloud import bigquery
+import apache_beam as beam
 
 PROJECT = "simple-data-pipeline-254314"
 SCHEMA = 'ticker:STRING, latest_time:TIMESTAMP, latest_price:FLOAT'
