@@ -21,5 +21,6 @@ class RequestExecutor:
         api = IEXAPI()
         response = api.get_latest_price(self.tickers)
         deserialized_response = response.json()
+        print(deserialized_response)
         message_format = self._reformat_response(deserialized_response)
         return message_format

@@ -1,25 +1,26 @@
 import sys
-import re
 import logging
 import argparse
-import time
+from datetime import datetime
 
 from apache_beam.options.pipeline_options import PipelineOptions
 from google.cloud import bigquery
 import apache_beam as beam
 
-PROJECT = "simple-data-pipeline-254314"
+PROJECT = os.environ.get('PROJECT')
+TOPIC = os.environ.get('TOPIC')
 SCHEMA = 'ticker:STRING, latest_time:TIMESTAMP, latest_price:FLOAT'
-TOPIC = "projects/{project}/topics/simple-data-pipeline-topic".format(project=PROJECT)
+TOPIC_PATH = "projects/{project}/topics/{topic}".format(project=PROJECT, topic=TOPIC)
+DATASET = 'simple_data_pipeline_dataset'
+TABLE = 'simple_data_pipeline_bitcoin'
 
 
 class Split(beam.DoFn):
 
-    message = """{ticker},{epoch_timestamp},{price}"""
-
     def _epoch_to_datetime(self, epoch):
-        datetime_string = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch))
-        return datetime_string
+        from datetime import datetime
+        datetime_output = datetime.fromtimestamp(epoch / 1000)
+        return datetime_output.strftime("%Y-%m-%d %H:%M:%S")
 
     def process(self, element):
         element = element.split(",")
@@ -34,18 +35,20 @@ class Split(beam.DoFn):
         }]
 
 
-def main(argv=None):
+def run(argv=None):
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_topic")
     parser.add_argument("--output")
     known_args = parser.parse_known_args(argv)
     p = beam.Pipeline(options=PipelineOptions())
-    (p
-       | 'ReadData' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes)
-       | "Decode" >> beam.Map(lambda x: x.decode('utf-8'))
-       | 'ParseCSV' >> beam.ParDo(Split())
-       | 'WriteToBigQuery' >> beam.io.WriteToBigQuery('{0}:userlogs.streaminglogs'.format(PROJECT), schema=SCHEMA, write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
+    messages = (p | 'ReadData' >> beam.io.ReadFromPubSub(topic=TOPIC_PATH).with_output_types(bytes))
+    lines = (messages | "Decode" >> beam.Map(lambda x: x.decode('utf-8')))
+    data = (lines | 'ParseCSV' >> beam.ParDo(Split()))
+    (data | 'WriteToBigQuery' >> beam.io.WriteToBigQuery(
+        '{project}:{dataset}.{table}'.format(project=PROJECT, dataset=DATASET, table=TABLE),
+        schema=SCHEMA,
+        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
     )
     result = p.run()
     result.wait_until_finish()
@@ -53,4 +56,4 @@ def main(argv=None):
 
 if __name__ == '__main__':
     logger = logging.getLogger().setLevel(logging.INFO)
-    main()
+    run()

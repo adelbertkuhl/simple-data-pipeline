@@ -1,9 +1,11 @@
+import os
 import requests
 from datetime import datetime
 
+
 class IEXAPI:
 
-    TOKEN = '***REMOVED***'
+    TOKEN = os.environ.get('IEX_API_KEY')
     PROTOCOL = 'https'
     DOMAIN = 'cloud.iexapis.com'
     PATH = """stable/stock/market/batch?symbols={tickers}&types=quote&filter=latestPrice,latestUpdate&token="""

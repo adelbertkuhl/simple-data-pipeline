@@ -1,14 +1,15 @@
+import os
 import threading
 
 from google.cloud import pubsub_v1
 from request_executors import RequestExecutor
 
-PROJECT_ID = "simple-data-pipeline-254314"
-TOPIC = "simple-data-pipeline-topic"
+PROJECT = os.environ.get('PROJECT')
+TOPIC = os.environ.get('TOPIC')
 WAIT_TIME_SECONDS = 60
 
 publisher = pubsub_v1.PublisherClient()
-topic_path = publisher.topic_path(PROJECT_ID, TOPIC)
+topic_path = publisher.topic_path(PROJECT, TOPIC)
 
 
 class PricePublisher:
