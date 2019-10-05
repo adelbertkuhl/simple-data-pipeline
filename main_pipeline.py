@@ -1,10 +1,8 @@
-import sys
+import os
 import logging
 import argparse
-from datetime import datetime
 
 from apache_beam.options.pipeline_options import PipelineOptions
-from google.cloud import bigquery
 import apache_beam as beam
 
 PROJECT = os.environ.get('PROJECT')
