@@ -7,7 +7,7 @@ class RequestExecutor:
     tickers = ['BTCUSDT']
 
     def _reformat_response(self, deserialized_response):
-        tickers = next(item for item in deserialized_response.keys())
+        tickers = next(item for item in deserialized_response)
         quotes = list(deserialized_response.values())
         prices = next(item['quote']['latestPrice'] for item in quotes)
         epoch_timestamps = next(item['quote']['latestUpdate'] for item in quotes)

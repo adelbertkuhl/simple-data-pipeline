@@ -42,7 +42,7 @@ def run(argv=None):
     p = beam.Pipeline(options=PipelineOptions())
     messages = (p | 'ReadData' >> beam.io.ReadFromPubSub(topic=TOPIC_PATH).with_output_types(bytes))
     lines = (messages | "Decode" >> beam.Map(lambda x: x.decode('utf-8')))
-    data = (lines | 'ParseCSV' >> beam.ParDo(Split()))
+    data = (lines | 'ParseDelimitedData' >> beam.ParDo(Split()))
     (data | 'WriteToBigQuery' >> beam.io.WriteToBigQuery(
         '{project}:{dataset}.{table}'.format(project=PROJECT, dataset=DATASET, table=TABLE),
         schema=SCHEMA,
