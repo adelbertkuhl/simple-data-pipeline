@@ -1,16 +1,16 @@
-# simple-data-pipeline (current equity price data)
+# simple-data-pipeline (Bitcoin exchange rate data)
 
 This project is an example of a simple data pipeline that runs on the Google Cloud Platform.
 
 The pipeline consists of the following procedures:
 
-- REST API calls to [IEX Cloud financial data platform](https://iexcloud.io/), retrieving the latest equity price for UBER Technologies Inc. at incremented intervals of 60 seconds.
-- Publishing the ticker, price, and timestamp data to a Google Pub/Sub Topic.
+- REST API calls to [IEX Cloud financial data platform](https://iexcloud.io/), retrieving the latest Bitcoin (BTCUSDT) exchange rate at incremented intervals of 60 seconds.
+- Publishing the ticker, exchange rate, and timestamp data to a Google Pub/Sub Topic.
 - An Apache Beam pipeline that retrieves the API data from the Google Pub/Sub Topic, cleans and transforms the published messages, and then loads them into a BigQuery table on GCP.
 
 ### Detailed instructions
 
-After loading the python modules and `setup.sh` script into Google Cloud Shell, execute the following command to kick off the process that publishes the price data to Pub/Sub from API REST calls:
+After loading the python modules and `setup.sh` script into Google Cloud Shell, execute the following command to kick off the process that publishes the exchange rate data to Pub/Sub from API REST calls:
 
 ```python publish.py```
 
