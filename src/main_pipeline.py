@@ -10,7 +10,7 @@ TOPIC = os.environ.get('TOPIC')
 SCHEMA = 'ticker:STRING, latest_time:TIMESTAMP, latest_price:FLOAT'
 TOPIC_PATH = "projects/{project}/topics/{topic}".format(project=PROJECT, topic=TOPIC)
 DATASET = 'simple_data_pipeline_dataset'
-TABLE = 'simple_data_pipeline_bitcoin'
+TABLE = 'simple_data_pipeline_{ticker}'
 
 
 class Split(beam.DoFn):
@@ -21,7 +21,7 @@ class Split(beam.DoFn):
         return datetime_output.strftime("%Y-%m-%d %H:%M:%S")
 
     def process(self, element):
-        element = element.split(",")
+        element = element.split(";")
         ticker_identifier = element[0]
         epoch = float(element[1])
         latest_price = float(element[2])
@@ -34,7 +34,6 @@ class Split(beam.DoFn):
 
 
 def run(argv=None):
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_topic")
     parser.add_argument("--output")
