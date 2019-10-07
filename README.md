@@ -18,6 +18,7 @@ You'll notice the publisher prints each API response to the console output, at t
 
 ![Image description](https://github.com/adelbertkuhl/simple-data-pipeline/blob/master/img/Screen%20Shot%202019-10-06%20at%206.13.50%20PM.png)
 
+
 In another cloudshell tab, run the following command to kick off a new GCP DataFlow job:
 
 ```
@@ -32,6 +33,7 @@ python main_pipeline.py \
 A new job dashbboard view will appear in the console. You can see each step of the pipeline in-progress and inspect successful or unsuccessful log reports. 
 
 ![Image description](https://github.com/adelbertkuhl/simple-data-pipeline/blob/master/img/Screen%20Shot%202019-10-06%20at%206.14.17%20PM.png)
+
 
 The pipeline downloads the message data from the specified Google Pub/Sub topic and performs a set of cleaning and transformation operations. The data is loaded into a GCP BigQuery table at the last step of the pipeline.
 
